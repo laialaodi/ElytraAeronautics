@@ -16,6 +16,8 @@ public class FlightConfig {
 
     // = Elytra flight attributes
 
+    // = Config instance
+    public static FlightConfig instance;
     // ; Flight speed settings.
     @Expose
     private boolean altitudeDeterminesSpeed = true;
@@ -27,7 +29,6 @@ public class FlightConfig {
     private double minHeight = 250.0;
     @Expose
     private double maxHeight = 1000.0;
-
     // ; Flight alignment settings.
     @Expose
     private boolean sneakingRealignsPitch = true;
@@ -36,26 +37,18 @@ public class FlightConfig {
     @Expose
     private float realignRate = 0.1F;
 
-    // = Config instance
-    public static FlightConfig instance;
-
-    public static FlightConfig getOrCreateInstance() {
-        if (instance == null){
-            instance = new FlightConfig();
-        }
-        return instance;
+    // ? Without parameters.
+    // ¿ Used in the instance initializer method above.
+    public FlightConfig() {
     }
 
     // $ Constructors
     // € These are used within the scope of the class or EanServerSettings, networking is always handled around the latter.
 
-    // ? Without parameters.
-    // ¿ Used in the instance initializer method above.
-    public FlightConfig(){}
-
     // ? With parameters.
     // ¿ Used in the createFromBuffer() method of the ServerSettings class.
-    public FlightConfig(boolean altitudeDeterminesSpeed, double minSpeed, double maxSpeed, double minHeight, double maxHeight, boolean sneakingRealignsPitch, float realignAngle, float realignRate) {
+    public FlightConfig(boolean altitudeDeterminesSpeed, double minSpeed, double maxSpeed, double minHeight,
+                        double maxHeight, boolean sneakingRealignsPitch, float realignAngle, float realignRate) {
         this.altitudeDeterminesSpeed = altitudeDeterminesSpeed;
         this.minSpeed = minSpeed;
         this.maxSpeed = maxSpeed;
@@ -66,10 +59,17 @@ public class FlightConfig {
         this.realignRate = realignRate;
     }
 
+    public static FlightConfig getOrCreateInstance() {
+        if (instance == null) {
+            instance = new FlightConfig();
+        }
+        return instance;
+    }
+
     //. NETWORKING
     // ? Method to update the current singleton instance with the server's.
     // ¿ Called in the EanClientPacketHandler class' receive() method. Basically a named setter; although not really related with networking, labeled as such for clarity purposes.
-    public static void updateClientSettings(FlightConfig flightConfig){
+    public static void updateClientSettings(FlightConfig flightConfig) {
         instance = flightConfig;
     }
 

@@ -11,18 +11,18 @@ public class DebugSpeedometer {
 
     static Vec3d lastPos = Vec3d.ZERO;
 
-    static public void displayDebugSpeedometer(Vec3d pos, World world){
+    static public void displayDebugSpeedometer(Vec3d pos, World world) {
         // Calculate speed.
         String message = "SPEED = " + (
                 Math.round(
                         Math.sqrt(
-                                Math.pow(pos.x-lastPos.x,2) +
-                                        Math.pow(pos.y-lastPos.y,2) +
-                                        Math.pow(pos.z-lastPos.z,2))
-                                * 20 /* 20 ticks every second */ * 100.0)) /100.0 + "m/s";
+                                Math.pow(pos.x - lastPos.x, 2) +
+                                        Math.pow(pos.y - lastPos.y, 2) +
+                                        Math.pow(pos.z - lastPos.z, 2))
+                                * 20 /* 20 ticks every second */ * 100.0)) / 100.0 + "m/s";
         lastPos = pos;
         // Send speed info.
-        if (world.isClient()){
+        if (world.isClient()) {
             List<? extends PlayerEntity> players = world.getPlayers();
             players.forEach(player -> player.sendMessage(Text.of(message), true));
         }

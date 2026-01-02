@@ -21,11 +21,20 @@ public interface WorldRendererAccessors {
     @Accessor
     int getLastCloudsBlockX();
 
+    @Accessor("lastCloudsBlockX")
+    void setLastCloudsBlockX(int lastCloudsBlockX);
+
     @Accessor
     int getLastCloudsBlockY();
 
+    @Accessor("lastCloudsBlockY")
+    void setLastCloudsBlockY(int lastCloudsBlockY);
+
     @Accessor
     int getLastCloudsBlockZ();
+
+    @Accessor("lastCloudsBlockZ")
+    void setLastCloudsBlockZ(int lastCloudsBlockZ);
 
     @Accessor
     MinecraftClient getClient();
@@ -33,32 +42,23 @@ public interface WorldRendererAccessors {
     @Accessor
     CloudRenderMode getLastCloudRenderMode();
 
+    @Accessor("lastCloudRenderMode")
+    void setLastCloudRenderMode(CloudRenderMode lastCloudRenderMode);
+
     @Accessor
     Vec3d getLastCloudsColor();
-
-    @Accessor
-    boolean getCloudsDirty();
-
-    @Accessor
-    VertexBuffer getCloudsBuffer();
-
-    @Accessor("lastCloudsBlockX")
-    void setLastCloudsBlockX(int lastCloudsBlockX);
-
-    @Accessor("lastCloudsBlockY")
-    void setLastCloudsBlockY(int lastCloudsBlockY);
-
-    @Accessor("lastCloudsBlockZ")
-    void setLastCloudsBlockZ(int lastCloudsBlockZ);
 
     @Accessor("lastCloudsColor")
     void setLastCloudsColor(Vec3d lastCloudsColor);
 
-    @Accessor("lastCloudRenderMode")
-    void setLastCloudRenderMode(CloudRenderMode lastCloudRenderMode);
+    @Accessor
+    boolean getCloudsDirty();
 
     @Accessor("cloudsDirty")
     void setCloudsDirty(boolean cloudsDirty);
+
+    @Accessor
+    VertexBuffer getCloudsBuffer();
 
     @Accessor("cloudsBuffer")
     void setCloudsBuffer(VertexBuffer cloudsBuffer);

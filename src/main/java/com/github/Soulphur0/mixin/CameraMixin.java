@@ -14,11 +14,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class CameraMixin {
 
     @Final
-    @Shadow @Mutable
+    @Shadow
+    @Mutable
     private Vector3f horizontalPlane;
 
     @Inject(method = "<init>", at = @At(value = "TAIL"))
-    private void ean_test(CallbackInfo ci){
+    private void ean_test(CallbackInfo ci) {
         this.horizontalPlane = new Vector3f(0.0F, 2.0F, 0.0F);
     }
 }

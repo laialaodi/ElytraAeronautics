@@ -6,16 +6,17 @@ import net.minecraft.util.math.Vec3d;
 
 /**
  * @see <a href="https://docs.google.com/spreadsheets/d/1M9V4Rn18zhw8LtKhFGyUJxN8YXPKszAVx1BnVu2qptQ/edit#gid=0">fallSpeedMultiplier quadratic increase with pitch.</a>
- * */
+ *
+ */
 public class MovementVectorParameters {
 
-    static public Vec3d calcMovementVector(LivingEntity player, double playerAltitude){
+    static public Vec3d calcMovementVector(LivingEntity player, double playerAltitude) {
         // ? The movement speed constant.
         double speedConstant = 0.08;
 
         // ? Aux variable used in movement vector calculations
         double aux;
-        
+
         // ? Player's movement vector in Vec3d form. (AKA velocity vector) 
         Vec3d movementVector = player.getVelocity();
 
@@ -23,12 +24,12 @@ public class MovementVectorParameters {
         if (movementVector.y > -0.5) {
             player.fallDistance = 1.0f;
         }
-        
+
         // ? Player's rotation vector.
         Vec3d rotationVector = player.getRotationVector();
 
         // ? Player's pitch in radians.
-        float pitchInRadians = player.getPitch() * ((float)Math.PI / 180);
+        float pitchInRadians = player.getPitch() * ((float) Math.PI / 180);
         // vAngle = 0   ; pitch = 0.008893194; pitchInRadians = 0.0001
         // vAngle = 90  ; pitch = 90         ; pitchInRadians = 1.57
         // vAngle = -90 ; pitch = -90        ; pitchInRadians = -1.57
@@ -40,7 +41,7 @@ public class MovementVectorParameters {
         // pitch = 90 ; var = 0
         // pitch = -90 ; var = 0~
         /**/
-        
+
         // ? Player flight speed.
         double speed = movementVector.horizontalLength();
         // pitch = 0.0  ; var = 1.51
@@ -62,11 +63,13 @@ public class MovementVectorParameters {
         /**/
 
         // * This makes fallSpeedMultiplier increase with pitch quadratically.
-        fallSpeedMultiplier = (float)((double)fallSpeedMultiplier * ((double)fallSpeedMultiplier * Math.min(1.0, rotationVectorLength / 0.4)));
+        fallSpeedMultiplier = (float) ((double) fallSpeedMultiplier * ((double) fallSpeedMultiplier * Math.min(1.0,
+                rotationVectorLength / 0.4)));
         // See javadoc to see curve.
 
         // * Adds downwards speed to the movement vector based on the pitch of the player.
-        movementVector = player.getVelocity().add(0.0, speedConstant * (-1.0 + (double)fallSpeedMultiplier * 0.75), 0.0);
+        movementVector = player.getVelocity()
+                .add(0.0, speedConstant * (-1.0 + (double) fallSpeedMultiplier * 0.75), 0.0);
         //  At max pitch (90degrees) added downwards speed is (-1.0 + 0.0) = -1.0 (maximum down speed).
         //  At min pitch (0 degrees) added downwards speed is (-1.0 + (1.0 * 0.75)) = -0.25 (minimum down speed).
 
@@ -76,7 +79,7 @@ public class MovementVectorParameters {
         // *                            [Determines horizontal speed based on vertical speed (the effect of being accelerated by gravity and redirecting said force with wings horizontally)]
         if (movementVector.y < 0.0 && angleToTheGround > 0.0) {
             // ! IMPORTANT: movementVector.y determines horizontal speed. Be careful on how this value is added to the y-axis each tick.
-            aux = movementVector.y * -0.1 * (double)fallSpeedMultiplier;
+            aux = movementVector.y * -0.1 * (double) fallSpeedMultiplier;
 
             /*
             System.out.println("X speed = " + rotationVector.x * aux / angleToTheGround);
@@ -85,24 +88,27 @@ public class MovementVectorParameters {
             */
 
             // Add to each axis of the movement vector the previous value multiplied by the axis' rotation, divided by the angleToTheGround
-            movementVector = movementVector.add(rotationVector.x * aux / angleToTheGround, aux, rotationVector.z * aux / angleToTheGround);
+            movementVector = movementVector.add(rotationVector.x * aux / angleToTheGround, aux,
+                    rotationVector.z * aux / angleToTheGround);
         }
 
         // * Called if the player is aiming over the horizon.
         // *    (Pitch is negative) -> [Speed should decrease]
         // *    Also applies gravity while fliying.
         if (pitchInRadians < 0.0f && angleToTheGround > 0.0) {
-            aux = speed * (double)(-MathHelper.sin(pitchInRadians)) * 0.04;
+            aux = speed * (double) (-MathHelper.sin(pitchInRadians)) * 0.04;
 
             // Aux is then added to the movement vector, which subtracts speed in each axis depending on how up the player looks (angle to the ground divider is 1 if looking straight up).
-            movementVector = movementVector.add(-rotationVector.x * aux / angleToTheGround, aux * 3.2, -rotationVector.z * aux / angleToTheGround);
+            movementVector = movementVector.add(-rotationVector.x * aux / angleToTheGround, aux * 3.2,
+                    -rotationVector.z * aux / angleToTheGround);
         }
 
         // * Always called. Cancels sideways momentum.
         if (angleToTheGround > 0.0) {
             // Add to the movement vector, the 3d looking direction multiplied by the speed minus the horizontal speed divided by 10.
             // In other words, this cancels "natural" sideways momentum, so you can make tight turns quickly.
-            movementVector = movementVector.add((rotationVector.x / angleToTheGround * speed - movementVector.x) * 0.1, 0.0, (rotationVector.z / angleToTheGround * speed - movementVector.z) * 0.1);
+            movementVector = movementVector.add((rotationVector.x / angleToTheGround * speed - movementVector.x) * 0.1,
+                    0.0, (rotationVector.z / angleToTheGround * speed - movementVector.z) * 0.1);
         }
 
         return movementVector;
